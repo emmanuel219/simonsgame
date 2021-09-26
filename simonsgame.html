@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+
+    <style>
+        
+        h1{font-family: Orbitron; margin-left: 640px;}
+
+        .button
+        {
+            margin-top: 120px;
+            background-color: rgb(150, 150, 150);
+            border: none;
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+            font-family: Orbitron;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .counter1
+        {
+            margin-top: 120px;
+            background-color: rgb(150, 150, 150);
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            display: inline-block;
+            font-size: 10px;
+            font-family: Orbitron;
+            border-radius: 5px;
+        }
+
+        .counter2
+        {
+            margin-top: 120px;
+            background-color: rgb(150, 150, 150);
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            display: inline-block;
+            font-size: 10px;
+            font-family: Orbitron;
+            border-radius: 5px;
+        }
+
+        .circle
+        {
+            margin-top: 100px;
+            margin-left: 605px;
+            text-align:center;
+            height: 300px;
+            width: 300px;
+            display: inline-block;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.925);
+            position: absolute;
+        }
+
+        .circle2
+        {
+            margin-top: 20px;
+            margin-left: 550px;
+            height: 150px;
+            width: 150px;
+            display: inline-block;
+            border-radius: 50%;
+            background-color: rgb(19,230,64);
+            box-shadow: 0px 0px 0px 10px black;
+            position: absolute;
+        }
+
+        .circle3
+        {
+            margin-left: 800px;
+            margin-top: 20px;
+            height: 150px;
+            width: 150px;
+            display: inline-block;
+            border-radius: 50%;
+            background-color: rgb(230, 19, 19);
+            box-shadow: 0px 0px 0px 10px black;
+            position: absolute;
+        }
+
+        .circle4
+        {
+            margin-left: 550px;
+            height: 150px;
+            width: 150px;
+            display: inline-block;
+            border-radius: 50%;
+            background-color: rgb(226, 230, 19);
+            margin-top: 320px;
+            box-shadow: 0px 0px 0px 10px black;
+            position: absolute;
+        }
+
+        .circle5
+        {
+            margin-top: 320px;
+            margin-left: 800px;
+            height: 150px;
+            width: 150px;
+            display: inline-block;
+            border-radius: 50%;
+            background-color: rgb(33, 19, 230);
+            box-shadow: 0px 0px 0px 10px black;
+            position: absolute;
+        }
+
+        .circle6
+        {
+            margin-top: 280px;
+            margin-left: 750px;
+            height: 10px;
+            width: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            position: absolute;
+            background-color:  rgb(230, 19, 19);
+        }
+
+</style>
+<title>Simons Game</title>
+<body>
+
+    <h1>Simons Game</h1>
+
+    <div>
+        <span class = "circle"><span class="counter1" id = "count1">00</span>
+        <button class = "button" id = "start;"  onclick = "setTimeout(flashery,3000); begin();">start</button>
+        <span class="counter2" id = "count2">00</span></span>
+        <button class = "circle2" id = "one"></button>
+        <button class = "circle3" id = "two"></button>
+        <button class = "circle4" id = "three"></button>
+        <button class = "circle5" id = "four"></button>
+        <span class = "circle6" id = "circ6"></span>
+    </div>
+
+    <script>
+
+        //creating an initialising my variables
+        var run = 5;
+        var i = 0;
+        var count= 1;
+        var round = 0;
+        var order = [];
+        var y = 0;
+        var value = 0;
+        var timeout1 = 500;
+        var timeout2 = 1200;
+        let timer = null;
+
+        //filling the array with values between 1 and 4
+        for(var j = 0; j < 20; j++)
+        {
+            order.push(Math.floor(Math.random() * 4) + 1);
+        }
+
+        //turning the red light green to indicate that the game has begun
+        function begin()
+        {
+            document.getElementById('circ6').style.backgroundColor = 'rgb(19,230,65)';
+        }
+
+        //when you press start again it fills the array with new values
+        function neworder()
+        {
+            for(var j = 0; j < 20; j++)
+            {
+                order.push(Math.floor(Math.random() * 4) + 1);
+            } 
+        }
+
+        //runs through the array values and flashes corresponding button
+        function flashery()
+        {
+            run = 5;
+            round = 0;
+            if(order[i] == 1){one()};
+            if(order[i] == 2){two()};
+            if(order[i] == 3){three()};
+            if(order[i] == 4){four()};
+
+            setTimeout(function()
+            {
+                clearColor();
+            }, timeout1);
+
+            //incrementing counter
+            document.getElementById('count2').innerHTML = count;
+            i++;
+
+            //highscore counter
+            if(document.getElementById('count1').innerHTML < count)
+            {
+                document.getElementById('count1').innerHTML = count-1;
+            }
+
+            //checks if the player has finished the game or if its the users turn
+            win();
+            shouldicontinue();
+        }
+
+        //checks if the players has won the game
+        function win()
+        {
+            if(count == order.length+1)
+            {
+                loser();
+            }
+        }
+
+        
+        function shouldicontinue()
+        {
+            //increases speed if you are on round 5,9,13
+            if(count == 5)
+            {
+                timeout1 = 400;
+                timeout2 = 700;
+            }
+
+            if(count == 9)
+            {
+                timeout1 = 300;
+                timeout2 = 500;
+            }
+
+            if(count == 13)
+            {
+                timeout1 = 200;
+                timeout2 = 300;
+            }
+
+            //if the array has caught up with the round its the users turn
+            if(i == count)
+            {
+                userturn();
+            }
+
+            //or you flash the next element in the array
+            else
+            {
+                setTimeout(function()
+                {
+                    flashery();
+                },timeout2);
+            }
+        }
+
+        //flashing functions
+        function one()
+        {
+            document.getElementById('one').setAttribute("style", "opacity: 0.5;");
+        }
+        function two()
+        {
+            document.getElementById('two').setAttribute("style", "opacity: 0.5;");
+        }
+        function three()
+        {
+            document.getElementById('three').setAttribute("style", "opacity: 0.5;");
+        }
+        function four()
+        {
+            document.getElementById('four').setAttribute("style", "opacity: 0.5;");
+        }
+
+        //clears the color
+        function clearColor()
+        {
+            document.getElementById('one').setAttribute("style", "opacity: 1;");
+            document.getElementById('two').setAttribute("style", "opacity: 1;");
+            document.getElementById('three').setAttribute("style", "opacity: 1;");
+            document.getElementById('four').setAttribute("style", "opacity: 1;");
+        }
+
+        //if the player has lost it resets all the values and flashes once
+        function loser()
+        {
+            order = [];
+            neworder();
+            timer = null;
+            timeout1 = 500;
+            timeout2 = 1200;
+            i = 0;
+            count = 1;
+            document.getElementById('count2').innerHTML = 0;
+            round = 0;
+
+            document.getElementById('circ6').style.backgroundColor = "red";
+            document.getElementById('one').setAttribute("style", "opacity: 0.5;");
+            document.getElementById('two').setAttribute("style", "opacity: 0.5;");
+            document.getElementById('three').setAttribute("style", "opacity: 0.5;");
+            document.getElementById('four').setAttribute("style", "opacity: 0.5;");
+
+            rerun();
+        }
+
+        //this function calls the loser method until the counter reaches 0, and it has flashed 5 times
+        function rerun()
+        {
+            if(run > 0)
+            {
+                run--;
+
+                setTimeout(function()
+                {
+                    clearColor();
+                }, 200);
+
+                setTimeout(function()
+                {
+                    loser();
+                }, 400);
+            }
+
+            else{
+                clearColor();
+            }
+        }
+
+        function userturn()
+        {
+            //if its still the users turn it checks if the user has clicked anything
+            if(round < count)
+            {
+                //if the user doesn't input after 5 seconds they lose
+                timer = setTimeout(loser,5000);
+
+                document.getElementById("one").onclick = function()
+                {
+                    value = 1;
+                    check();
+                    setTimeout(function()
+                    {
+                        clearColor();
+                    }, 150);
+                    document.getElementById('one').setAttribute("style", "opacity: 0.5;");
+                };
+
+                document.getElementById("two").onclick = function()
+                {
+                    value = 2;
+                    check();
+                    setTimeout(function()
+                    {
+                        clearColor();
+                    }, 150);
+                    document.getElementById('two').setAttribute("style", "opacity: 0.5;");
+                };
+
+                document.getElementById("three").onclick = function()
+                {
+                    value = 3;
+                    check();
+                    setTimeout(function()
+                    {
+                        clearColor();
+                    }, 150);
+                    document.getElementById('three').setAttribute("style", "opacity: 0.5;");
+                };
+
+                document.getElementById("four").onclick = function()
+                {
+                    value = 4;
+                    check();
+                    setTimeout(function()
+                    {
+                        clearColor();
+                    }, 150);
+                    document.getElementById('four').setAttribute("style", "opacity: 0.5;");
+                };
+            }
+
+            //if it isn't the users turn it then calls the computers method for the computer to start flashing 
+            if(round == count)
+            {
+                i = 0;
+                count++;
+                setTimeout(function()
+                {
+                    flashery();
+                }, timeout2);
+            }
+        }
+
+        function check()
+        {
+            //if the user clicks it resets the timer back to 5 seconds
+            clearTimeout(timer);
+
+            //if the user clicked the same value as the computer showed then it moves onto the next value and calls users turn again
+            if(value == order[round])
+            {
+                round++;
+                userturn();
+            }
+
+            //or else they lose
+            else
+            {
+                loser();
+            }
+        }
+    </script>
+</body>
+</head>
+</html>
